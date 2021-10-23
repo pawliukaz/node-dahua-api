@@ -1,11 +1,17 @@
-var ipcamer = require('./dahua.js');
+require('dotenv').config();
+let ipcamera = require('./dahua.js');
+let log = false;
+if (process.env.CAMERA_LOG==='true') {
+    log = true;
+}
+
 // Options:
-var options = {
+let options = {
     host	: process.env.CAMERA_HOST,
-    port 	: '80',
-    user 	: 'admin',
-    pass 	: '63u235pau',
-    log 	: false
+    port 	: process.env.CAMERA_PORT,
+    user 	: process.env.CAMERA_USER,
+    pass 	: process.env.CAMERA_PASS,
+    log 	: log
 };
 
 let dahua = new ipcamera.dahua(options);
