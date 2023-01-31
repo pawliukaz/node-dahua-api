@@ -16,13 +16,16 @@ let options = {
 
 let dahua = new ipcamera.dahua(options);
 let time = new Date();
+let crossLineAlarm = false;
+const presetPositions = [1, 2, 3];
+let currentPosition = 2;
 
 console.log('Running...');
 console.log('Move back to 2 position...');
 dahua.ptzPreset(2);
 
 // Monitor Camera Alarms
-dahua.on('alarm', function(code,action,index, eventData) {
+dahua.on('alarm', function(code, action, index, eventData) {
     eventData = JSON.parse(eventData);
     if (code === 'CrossLineDetection' && action === 'Stop') {
         if (eventData.Name === 'Rule2') {
@@ -50,16 +53,19 @@ dahua.on('alarm', function (code, action, index, eventData) {
         if (eventData.Name === 'Rule1') {
             if (time.getTime() < ((new Date()).getTime()  - 300000)) {
                 asyncCameraMove();
+                crossLineAlarm = true;
             }
         }
         if (eventData.Name === 'Rule3') {
             if (time.getTime() < ((new Date()).getTime()  - 300000)) {
                 asyncCameraMove();
+                crossLineAlarm = true
             }
         }
         if (eventData.Name === 'Rule6') {
             if (time.getTime() < ((new Date()).getTime()  - 300000)) {
                 asyncCameraMove();
+                crossLineAlarm = true;
             }
         }
     }
@@ -70,6 +76,7 @@ function resolveAfter300Seconds() {
     console.log('Start counting until move back...');
     return new Promise(resolve => {
         setTimeout(() => {
+            crossLineAlarm = false;
             resolve(true);
         }, 300000);
     });
@@ -82,6 +89,17 @@ async function asyncCameraMove() {
         console.log('Move back to 2 position...');
         dahua.ptzPreset(2);
     }
+
+    setInterval(() => {
+        if (!crossLineAlarm) {
+            dahua.ptzPreset(presetPositions[currentPosition]);
+            currentPosition++;
+
+            if (currentPosition >= presetPositions.length) {
+                currentPosition = 0;
+            }
+        }
+    }, 10 * 60 * 1000);
 }
 
 
