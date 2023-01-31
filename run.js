@@ -75,10 +75,12 @@ dahua.on('alarm', function (code, action, index, eventData) {
 function resolveAfter300Seconds() {
     console.log('Start counting until move back...');
     return new Promise(resolve => {
-        setTimeout(() => {
-            crossLineAlarm = false;
-            resolve(true);
-        }, 300000);
+        if (crossLineAlarm === true) {
+            setTimeout(() => {
+                crossLineAlarm = false;
+                resolve(true);
+            }, 300000);
+        }
     });
 }
 
