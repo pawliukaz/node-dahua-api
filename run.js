@@ -32,18 +32,22 @@ dahua.on('alarm', function(code, action, index, eventData) {
         if (eventData.Name === 'Rule2') {
             console.log('Move to 2 position...');
             dahua.ptzPreset(2);
+            crossLineAlarm = true;
         }
         if (eventData.Name === 'Rule4') {
             console.log('Move to 1 position...');
             dahua.ptzPreset(1);
+            crossLineAlarm = true;
         }
         if (eventData.Name === 'Rule5') {
             console.log('Move to 3 position...');
             dahua.ptzPreset(3);
+            crossLineAlarm = true;
         }
         if (eventData.Name === 'Rule7') {
             console.log('Move to 2 position...');
             dahua.ptzPreset(2);
+            crossLineAlarm = true;
         }
     }
 });
