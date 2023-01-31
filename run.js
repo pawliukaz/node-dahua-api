@@ -92,6 +92,7 @@ async function asyncCameraMove() {
 
     setInterval(() => {
         if (!crossLineAlarm) {
+            console.log('Camera moves to position ' + presetPositions[currentPosition] + ' ...');
             dahua.ptzPreset(presetPositions[currentPosition]);
             currentPosition++;
 
