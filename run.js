@@ -18,11 +18,12 @@ let dahua = new ipcamera.dahua(options);
 let time = new Date();
 let crossLineAlarm = false;
 const presetPositions = [1, 2, 3];
+const mainPosition = 2;
 let currentPosition = 2;
 
 console.log('Running...');
 console.log('Move back to 2 position...');
-dahua.ptzPreset(2);
+dahua.ptzPreset(mainPosition);
 
 // Monitor Camera Alarms
 dahua.on('alarm', function(code, action, index, eventData) {
@@ -71,16 +72,26 @@ dahua.on('alarm', function (code, action, index, eventData) {
     }
 });
 
+setInterval(() => {
+    if (!crossLineAlarm) {
+        console.log('Camera moves to position ' + presetPositions[currentPosition] + ' ...');
+        dahua.ptzPreset(presetPositions[currentPosition]);
+        currentPosition++;
+
+        if (currentPosition >= presetPositions.length) {
+            currentPosition = 0;
+        }
+    }
+}, 3 * 60 * 1000);
+
 
 function resolveAfter300Seconds() {
     console.log('Start counting until move back...');
     return new Promise(resolve => {
-        if (crossLineAlarm === true) {
-            setTimeout(() => {
-                crossLineAlarm = false;
-                resolve(true);
-            }, 300000);
-        }
+        setTimeout(() => {
+            crossLineAlarm = false;
+            resolve(true);
+        }, 300000);
     });
 }
 
@@ -89,20 +100,8 @@ async function asyncCameraMove() {
     const result = await resolveAfter300Seconds()
     if (result === true) {
         console.log('Move back to 2 position...');
-        dahua.ptzPreset(2);
+        dahua.ptzPreset(mainPosition);
     }
-
-    setInterval(() => {
-        if (!crossLineAlarm) {
-            console.log('Camera moves to position ' + presetPositions[currentPosition] + ' ...');
-            dahua.ptzPreset(presetPositions[currentPosition]);
-            currentPosition++;
-
-            if (currentPosition >= presetPositions.length) {
-                currentPosition = 0;
-            }
-        }
-    }, 10 * 60 * 1000);
 }
 
 
