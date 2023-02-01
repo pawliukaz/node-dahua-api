@@ -46,7 +46,7 @@ dahua.on('alarm', function(code, action, index, eventData) {
         }
         if (eventData.Name === 'Rule7') {
             console.log('Move to 2 position...');
-            dahua.ptzPreset(2);
+            dahua.ptzPreset(mainPosition);
             crossLineAlarm = true;
         }
     }
@@ -56,21 +56,27 @@ dahua.on('alarm', function (code, action, index, eventData) {
     eventData = JSON.parse(eventData);
     if (code === 'CrossRegionDetection' && action === 'Stop') {
         if (eventData.Name === 'Rule1') {
+            console.log('Motion alert at 1 position');
             if (time.getTime() < ((new Date()).getTime()  - 300000)) {
-                asyncCameraMove();
                 crossLineAlarm = true;
+                asyncCameraMove();
+
             }
         }
         if (eventData.Name === 'Rule3') {
+            console.log('Motion alert at 2 position');
             if (time.getTime() < ((new Date()).getTime()  - 300000)) {
+                crossLineAlarm = true;
                 asyncCameraMove();
-                crossLineAlarm = true
+
             }
         }
         if (eventData.Name === 'Rule6') {
+            console.log('Motion alert at 2 position');
             if (time.getTime() < ((new Date()).getTime()  - 300000)) {
-                asyncCameraMove();
                 crossLineAlarm = true;
+                asyncCameraMove();
+
             }
         }
     }
